@@ -5,15 +5,18 @@ from email.message import EmailMessage
 
 import os
 
+currPath = os.path.dirname(os.path.abspath(__file__))
+parentPath = os.path.dirname(currPath)
+libPath = parentPath+'/jan-lib'
+
 # tole moramo dodati da lahko importamo py file iz drugih lokacij
 import sys
-sys.path.insert(1, '/home/serverpc/jan-projects/jan_lib')
+sys.path.insert(1, libPath)
 import jan_cobiss
 import jan_email
 import jan_enum
 import jan_sqlite
 
-currPath = os.path.dirname(os.path.abspath(__file__))
 sqlConn = jan_sqlite.create_connection(currPath+"/library.db")
 
 print(currPath+"/library.db")
