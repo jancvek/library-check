@@ -3,12 +3,12 @@ Description=Service za preverjanje cobissa
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 -u library_service.py
-WorkingDirectory=/home/serverpc/jan-projects/library-check/
+ExecStart=/home/lubuntu/jan-projects/janenv/bin/python -u library_service.py
+WorkingDirectory=/home/lubuntu/jan-projects/library-check/
 StandardOutput=inherit
 StandardError=inherit
 Restart=no
-User=serverpc
+User=lubuntu
 
 [Install]
 WantedBy=multi-user.target
