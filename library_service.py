@@ -32,11 +32,12 @@ else:
     print("sqlConn ne dela!")
 
 with sqlConn:
-    values1 = '1,'+str(cobissJan.status)+','+cobissJan.error
-    print(values1)
-    jan_sqlite.insert_data(sqlConn, 'data', ("created_by_service", "status", "text"),values1)
+    values1 = ('1','JAN',str(cobissJan.status.name),cobissJan.minDays,cobissJan.error)
 
-if(cobissJan.isError):
+    params1 = "created_by_service,library_user,status,days_to_expire,text"
+    jan_sqlite.insert_data(sqlConn, 'data', params1, values1)
+
+if cobissJan.isError:
     print(cobissJan.error)
     email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Jan: '+cobissJan.error)
 else:
@@ -51,10 +52,11 @@ cobissMasa = jan_cobiss.Cobiss("0107170","knjiga")
 cobissMasa.checkCobiss()
 
 with sqlConn:
-    values2 = '1,'+str(cobissMasa.status)+','+cobissMasa.error
-    jan_sqlite.insert_data(sqlConn, 'data', ("created_by_service", "status", "text"),values2)
+    values2 = ('1','MASA',str(cobissMasa.status.name),cobissMasa.minDays,cobissMasa.error)
+    params2 = "created_by_service,library_user,status,days_to_expire,text"
+    jan_sqlite.insert_data(sqlConn, 'data', params2, values2)
 
-if(cobissMasa.isError):
+if cobissMasa.isError:
     print(cobissMasa.error)
     email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Masa: '+cobissMasa.error)
 else:
