@@ -3,7 +3,7 @@ Description=Service za preverjanje cobissa
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 -u library_service.python3
+ExecStart=/usr/bin/python3 -u library_service.py
 WorkingDirectory=/home/serverpc/jan-projects/library-check/
 StandardOutput=inherit
 StandardError=inherit
