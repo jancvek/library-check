@@ -17,52 +17,57 @@ import jan_email
 import jan_enum
 import jan_sqlite
 
-sqlConn = jan_sqlite.create_connection(currPath+"/library.db")
+def checkLibrary():
 
-print(currPath+"/library.db")
+    sqlConn = jan_sqlite.create_connection(currPath+"/library.db")
 
-email = jan_email.Email()
+    print(currPath+"/library.db")
 
-cobissJan = jan_cobiss.Cobiss("0104232","knjiga")
-cobissJan.checkCobiss()
+    email = jan_email.Email()
 
-if sqlConn:
-    print("sqlConn dela")
-else:
-    print("sqlConn ne dela!")
+    cobissJan = jan_cobiss.Cobiss("0104232","knjiga")
+    cobissJan.checkCobiss()
 
-with sqlConn:
-    values1 = ('1','JAN',str(cobissJan.status.name),cobissJan.minDays,cobissJan.error)
+    if sqlConn:
+        print("sqlConn dela")
+    else:
+        print("sqlConn ne dela!")
 
-    params1 = "created_by_service,library_user,status,days_to_expire,text"
-    jan_sqlite.insert_data(sqlConn, 'data', params1, values1)
+    with sqlConn:
+        values1 = ('1','JAN',str(cobissJan.status.name),cobissJan.minDays,cobissJan.error)
 
-if cobissJan.isError:
-    print(cobissJan.error)
-    email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Jan: '+cobissJan.error)
-else:
-    if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
-        email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Jan se: '+cobissJan.minDays+' dni do preteka!')
+        params1 = "created_by_service,library_user,status,days_to_expire,text"
+        jan_sqlite.insert_data(sqlConn, 'data', params1, values1)
 
-    print(str(cobissJan.minDays))
-    print(str(cobissJan.status))
+    if cobissJan.isError:
+        print(cobissJan.error)
+        email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Jan: '+cobissJan.error)
+    else:
+        if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
+            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Jan se: '+cobissJan.minDays+' dni do preteka!')
+
+        print(str(cobissJan.minDays))
+        print(str(cobissJan.status))
 
 
-cobissMasa = jan_cobiss.Cobiss("0107170","knjiga")
-cobissMasa.checkCobiss()
+    cobissMasa = jan_cobiss.Cobiss("0107170","knjiga")
+    cobissMasa.checkCobiss()
 
-with sqlConn:
-    values2 = ('1','MASA',str(cobissMasa.status.name),cobissMasa.minDays,cobissMasa.error)
-    params2 = "created_by_service,library_user,status,days_to_expire,text"
-    jan_sqlite.insert_data(sqlConn, 'data', params2, values2)
+    with sqlConn:
+        values2 = ('1','MASA',str(cobissMasa.status.name),cobissMasa.minDays,cobissMasa.error)
+        params2 = "created_by_service,library_user,status,days_to_expire,text"
+        jan_sqlite.insert_data(sqlConn, 'data', params2, values2)
 
-if cobissMasa.isError:
-    print(cobissMasa.error)
-    email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Masa: '+cobissMasa.error)
-else:
-    if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
-        email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Masa se: '+cobissMasa.minDays+' dni do preteka!')
+    if cobissMasa.isError:
+        print(cobissMasa.error)
+        email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Masa: '+cobissMasa.error)
+    else:
+        if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
+            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Masa se: '+cobissMasa.minDays+' dni do preteka!')
 
-    print(str(cobissMasa.minDays))
-    print(str(cobissMasa.status))
+        print(str(cobissMasa.minDays))
+        print(str(cobissMasa.status))
 
+# tole se zazene ko je to main program ni klican iz druge kode
+if __name__ == '__main__':
+   checkLibrary()

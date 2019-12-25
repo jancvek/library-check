@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+            <title>Library Check</title>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+            <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+            
+    </head>
+    <style>
+        .top-buffer-xl { margin-top:40px; }
+        .top-buffer-md { margin-top:20px; }
+    </style>
+    <body>
+        <div class="container">
+
+            <div class="row top-buffer-xl">
+                <h1>Knjižnica:</h1>
+            </div>
+            
+            <!-- TRENUTNO STANJE: -->
+            <div class="row top-buffer-md">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="card text-center border-success mb-3 mx-auto" style="max-width: 18rem;" id="jan_card">
+                            <div class="card-header"><h3>Jan:</h3></div>
+                            <div class="card-body">
+                              <h3 class="card-title" id="jan_curr_days"></h3>
+                              <p class="card-text">dni do preteka</p>
+                            </div>
+                        </div>
+                    </div>       
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="card text-center border-success mb-3 mx-auto" style="max-width: 18rem;" id="masa_card">
+                            <div class="card-header"><h3>Maša:</h3></div>
+                            <div class="card-body">
+                              <h3 class="card-title" id="masa_curr_days"></h3>
+                              <p class="card-text">dni do preteka</p>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+            <!-- GUMB OSVEŽI -->
+            <div class="row top-buffer-xl">              
+                <div class="col-6"><button type="button" class="btn btn-primary" id="refresh">Osveži</button></div>
+                <div class="col-6 text-right"><p id="last_updated"></p></div>
+            </div>
+
+            <!-- TABELA S PODATKI -->
+            <div class="row top-buffer-xl" >
+                <table class="table table-sm" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Datum</th>
+                            <th scope="col">Uporabnik</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Dnevi do poteka</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <script>
+            $(document).ready(function(){
+                console.log("Start on load");
+                
+                initPage();
+            })
+
+            $("#refresh").on("click",function(){
+                console.log("refresh");
+                $(this).text(''); 
+                $(this).append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id=""></span> Nalagam...');
+
+                 var jqxhr = $.getJSON( "http://localhost:8080/knjApi/checkLib", function(data) {
+                    console.log( "success" );
+
+                    $("#dataTable tbody").empty();  //empty all data in table
+
+                    $("#refresh").text('Osveži'); 
+                    $("#refresh span").first().remove();
+
+                    initPage();
+                })
+                .done(function(data) {
+                    console.log( "second success" );
+                    $("#refresh").text('Osveži'); 
+                    $("#refresh span").first().remove();
+                })
+                .fail(function() {
+                    console.log( "error" );
+                    $("#refresh").text('Osveži'); 
+                    $("#refresh span").first().remove();
+                })
+                .always(function() {
+                    console.log( "complete" );
+                    $("#refresh").text('Osveži'); 
+                    $("#refresh span").first().remove();
+                });                      
+            });
+
+            function initPage()
+            {
+                var jqxhr = $.getJSON( "http://localhost:8080/knjApi/main", function(data) {
+                    console.log( "success" );
+                    
+                    json = JSON.parse(data);
+                    console.log(json);
+                    setCurrDates(json);
+
+                    fillTable(json.data)
+                })
+                .done(function(json) {
+                    console.log( "second success" );
+                })
+                .fail(function() {
+                    console.log( "error" );
+                })
+                .always(function() {
+                    console.log( "complete" );
+                });        
+            }
+
+            function fillTable(jsonData)
+            {
+                jsonData.forEach(el => {
+                    console.log(el);
+
+                    var utcT = moment.utc(el.date).toDate();    //iz naze dobimo datum v UTC formatu
+                    var localT = moment(utcT).local().format('DD-MM-YYYY HH:mm:ss');    //UTC format spremenimo v local
+                  
+                    var statusClass = '';
+                    if(el.to_return == 1)
+                    {
+                        statusClass = 'table-warning';   //nočem zelene za ok ampak belo
+                    }
+                    else if(el.state == "ERROR")
+                    {
+                        statusClass = 'table-danger';
+                    }
+
+                    $('#dataTable > tbody:last-child').append(
+                        '<tr>'+
+                            '<th scope="row" class='+statusClass+'>'+el.id+'</th>'+
+                            '<td class='+statusClass+'>'+localT+'</td>'+
+                            '<td class='+statusClass+'>'+el.user+'</td>'+
+                            '<td class='+statusClass+'>'+el.state+'</td>'+
+                            '<td class='+statusClass+'>'+el.min_days+'</td>'+
+                        '</tr>'
+                    );                  
+                });
+            }
+
+            function setCurrDates(json)
+            {
+                var janDays = json.minDays_jan;
+                var masaDays = json.minDays_masa;
+                
+                var utcT = moment.utc(json.last_updated).toDate();    //iz naze dobimo datum v UTC formatu
+                var localT = moment(utcT).local().format('DD-MM-YYYY HH:mm:ss');    //UTC format spremenimo v local
+
+                $('#jan_curr_days').text(janDays);
+                $('#masa_curr_days').text(masaDays);
+                $('#last_updated').text(localT);
+
+                if(janDays <= 3)
+                {
+                    $('#jan_card').removeClass("border-success");
+                    $('#jan_card').addClass("border-danger");
+                }
+
+                if(masaDays <= 3)
+                {
+                    $('#masa_card').removeClass("border-success");
+                    $('#masa_card').addClass("border-danger");
+                }
+            }
+        </script>
+    </body>
+</html>
