@@ -3,3 +3,4 @@ geckodriver.log
 get-pip.py
 __pycache__/library.cpython-36.pyc
 __pycache__/library_service.cpython-36.pyc
+library.db
