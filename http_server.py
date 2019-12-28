@@ -1,5 +1,7 @@
-import http.server
-import socketserver
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
+import threading
+
 from os import curdir, sep
 import json
 
@@ -18,13 +20,13 @@ import library
 import library_service
 
 PORT = 8080
-Handler = http.server.SimpleHTTPRequestHandler
 
-class myHandler(Handler):
+class Handler(BaseHTTPRequestHandler):
 
     #Handler for the GET requests
     def do_GET(self):
-        print(self.path)
+
+        # print(self.path)
         # rootdir = 'c:/xampp/htdocs/' #file location  
         try:  
             # if self.path.endswith('.html'): 
@@ -127,7 +129,7 @@ class myHandler(Handler):
             elif self.path.endswith('/knjApi/checkLib'):
 
                 library_service.checkLibrary()
-
+                
                 #send code 200 response  
                 self.send_response(200)
 
@@ -142,10 +144,10 @@ class myHandler(Handler):
         except IOError:  
             self.send_error(404, 'file not found')  
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """Handle requests in a separate thread."""
 
-with socketserver.TCPServer(("", PORT), myHandler) as httpd:
-    try:
-        print("serving at port", PORT)
-        httpd.serve_forever()
-    except Exception:
-        httpd.shutdown()
+if __name__ == '__main__':
+    server = ThreadedHTTPServer(('localhost', PORT), Handler)
+    print('Starting server, use <Ctrl-C> to stop')
+    server.serve_forever()
