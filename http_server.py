@@ -141,6 +141,34 @@ class Handler(BaseHTTPRequestHandler):
 
                 self.wfile.write(mBin) 
 
+            elif self.path.endswith(".png"):
+                f = open(currPath + sep +self.path, 'rb')
+                #send code 200 response  
+                self.send_response(200)  
+
+                #send header first  
+                self.send_header('Content-type','image/png')
+                self.end_headers()  
+
+                fileData = f.read()
+                self.wfile.write(fileData)  
+                f.close()  
+                return
+
+            elif self.path.endswith(".ico"):
+                f = open(currPath + sep +self.path, 'rb')
+                #send code 200 response  
+                self.send_response(200)  
+
+                #send header first  
+                self.send_header('Content-type','image/x-icon')
+                self.end_headers()  
+
+                fileData = f.read()
+                self.wfile.write(fileData)  
+                f.close()  
+                return
+
         except IOError:  
             self.send_error(404, 'file not found')  
 
