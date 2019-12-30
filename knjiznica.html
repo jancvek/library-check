@@ -90,7 +90,7 @@
                 $(this).text(''); 
                 $(this).append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id=""></span> Nalagam...');
 
-                 var jqxhr = $.getJSON( "http://localhost:8080/knjApi/checkLib", function(data) {
+                 var jqxhr = $.getJSON( "../knjApi/checkLib", function(data) {
                     console.log( "success" );
 
                     $("#dataTable tbody").empty();  //empty all data in table
@@ -119,7 +119,7 @@
 
             function initPage()
             {
-                var jqxhr = $.getJSON( "http://localhost:8080/knjApi/main", function(data) {
+                var jqxhr = $.getJSON( "../knjApi/main", function(data) {
                     console.log( "success" );
                     
                     json = JSON.parse(data);
