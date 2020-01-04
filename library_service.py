@@ -34,9 +34,8 @@ def checkLibrary():
         print("sqlConn ne dela!")
 
     with sqlConn:
-        values1 = ('1','JAN',str(cobissJan.status.name),cobissJan.minDays,cobissJan.error)
-
         params1 = "created_by_service,library_user,status,days_to_expire,text"
+        values1 = ('1','JAN',str(cobissJan.status.name),cobissJan.minDays,cobissJan.error)   
         jan_sqlite.insert_data(sqlConn, 'data', params1, values1)
 
     if cobissJan.isError:
@@ -54,8 +53,8 @@ def checkLibrary():
     cobissMasa.checkCobiss()
 
     with sqlConn:
-        values2 = ('1','MASA',str(cobissMasa.status.name),cobissMasa.minDays,cobissMasa.error)
         params2 = "created_by_service,library_user,status,days_to_expire,text"
+        values2 = ('1','MASA',str(cobissMasa.status.name),cobissMasa.minDays,cobissMasa.error)  
         jan_sqlite.insert_data(sqlConn, 'data', params2, values2)
 
     if cobissMasa.isError:
