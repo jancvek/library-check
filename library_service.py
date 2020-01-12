@@ -43,7 +43,7 @@ def checkLibrary():
         email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Jan: '+cobissJan.error)
     else:
         if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
-            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Jan se: '+cobissJan.minDays+' dni do preteka!')
+            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Jan se: '+str(cobissJan.minDays)+' dni do preteka!')
 
         print(str(cobissJan.minDays))
         print(str(cobissJan.status))
@@ -62,7 +62,7 @@ def checkLibrary():
         email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - ERROR!','Error Knjiznica Masa: '+cobissMasa.error)
     else:
         if cobissJan.status == jan_enum.EStatusLibrary.EXPIRE_SOON:
-            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Masa se: '+cobissMasa.minDays+' dni do preteka!')
+            email.sentEmail(['jan.cvek@gmail.com'],'Knjiznica API - VRNI!','Knjiznica Masa se: '+str(cobissMasa.minDays)+' dni do preteka!')
 
         print(str(cobissMasa.minDays))
         print(str(cobissMasa.status))
