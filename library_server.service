@@ -3,7 +3,7 @@ Description=Service za zagon library serverja
 After=network.target
 
 [Service]
-ExecStart=/home/lubuntu/jan-projects/janenv/bin/python -u http_server.py
+ExecStart=/home/lubuntu/jan-projects/janenv/bin/python3 -u http_server.py
 WorkingDirectory=/home/lubuntu/jan-projects/library-check/
 StandardOutput=inherit
 StandardError=inherit
