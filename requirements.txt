@@ -1,4 +1,4 @@
 EasyProcess==0.2.8
 PyVirtualDisplay==0.2.5
 selenium==3.141.0
-urllib3==1.25.7
+urllib3==1.26.5
